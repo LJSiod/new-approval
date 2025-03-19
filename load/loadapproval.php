@@ -7,7 +7,7 @@ $date = new DateTimeImmutable();
 $today = $date->format('Y-m-d');
 
 if ($branchid == 1) {
-$query = "SELECT 
+    $query = "SELECT 
     a.ID,
     b.Name AS BranchName,
     a.PreviousLoanAmount,
@@ -32,7 +32,7 @@ ORDER BY a.ID DESC";
 
 } else {
 
-$query = "SELECT 
+    $query = "SELECT 
     a.ID,
     b.Name AS BranchName,
     a.PreviousLoanAmount,
@@ -61,7 +61,7 @@ $result = mysqli_query($conn, $query);
 
 if (mysqli_num_rows($result) > 0) {
     $data = array();
-    while ($row = mysqli_fetch_assoc($result)) { 
+    while ($row = mysqli_fetch_assoc($result)) {
         $data[] = array(
             'ID' => $row['ID'],
             'BranchName' => $row['BranchName'],
@@ -80,5 +80,5 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     echo json_encode(array('data' => array()));
 }
-        
+
 

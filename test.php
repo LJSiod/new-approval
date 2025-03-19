@@ -14,4 +14,4 @@ move_uploaded_file($filetmp, $filedir . $filename);
 <form action="test.php" method="post" enctype="multipart/form-data">
     <label for="file">Filename:</label>
     <input type="file" name="file" id="file" />
-<input type="submit" name="submit" value="Submit" />
+    <input type="submit" name="submit" value="Submit" />

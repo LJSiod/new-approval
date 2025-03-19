@@ -53,9 +53,9 @@ if (isset($_POST['save'])) {
         $reqID = mysqli_insert_id($conn);
 
         for ($i = 0; $i <= 11; $i++) {
-            $fileKey = 'file' . ($i === 0 ? '' : $i); 
-            $filePathVariable = 'file' . ($i === 0 ? '' : $i) . 'Path'; 
-            $fileNameVariable = 'fileName' . ($i === 0 ? '' : $i); 
+            $fileKey = 'file' . ($i === 0 ? '' : $i);
+            $filePathVariable = 'file' . ($i === 0 ? '' : $i) . 'Path';
+            $fileNameVariable = 'fileName' . ($i === 0 ? '' : $i);
             if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] == 0) {
                 $file = $_FILES[$fileKey];
                 $$fileNameVariable = $file['name'];
@@ -76,26 +76,26 @@ if (isset($_POST['save'])) {
             }
         }
 
-       if (isset($_FILES['ledgerf']) && $_FILES['ledgerf']['error'] == 0) {
-           $ledgerfFile = $_FILES['ledgerf'];
-           $ledgerfFileName = $ledgerfFile['name'];
-           $ledgerfFilePath = $ledgerDir . 'LEDGEF' . '_' . $branchid . $timenodash . '.' . pathinfo($ledgerfFileName, PATHINFO_EXTENSION);
-           if (!move_uploaded_file($ledgerfFile['tmp_name'], $ledgerfFilePath)) {
-               echo 'Error uploading ledger file';
-           }
-       }
-       
-       if (isset($_FILES['ledgerb']) && $_FILES['ledgerb']['error'] == 0) {
-           $ledgerbFile = $_FILES['ledgerb'];
-           $ledgerbFileName = $ledgerbFile['name'];
-           $ledgerbFilePath = $ledgerDir . 'LEDGEB' . '_' . $branchid . $timenodash . '.' . pathinfo($ledgerbFileName, PATHINFO_EXTENSION);
-           if (!move_uploaded_file($ledgerbFile['tmp_name'], $ledgerbFilePath)) {
-               echo 'Error uploading ledger file';
-           }
-       }
-       
-       $ledgerquery = "INSERT INTO `ledger` (`userId`, `front`, `back`, `date`) VALUES ('$reqID', '$ledgerfFilePath', '$ledgerbFilePath', '$dateresult')";
-       mysqli_query($conn, $ledgerquery);
+        if (isset($_FILES['ledgerf']) && $_FILES['ledgerf']['error'] == 0) {
+            $ledgerfFile = $_FILES['ledgerf'];
+            $ledgerfFileName = $ledgerfFile['name'];
+            $ledgerfFilePath = $ledgerDir . 'LEDGEF' . '_' . $branchid . $timenodash . '.' . pathinfo($ledgerfFileName, PATHINFO_EXTENSION);
+            if (!move_uploaded_file($ledgerfFile['tmp_name'], $ledgerfFilePath)) {
+                echo 'Error uploading ledger file';
+            }
+        }
+
+        if (isset($_FILES['ledgerb']) && $_FILES['ledgerb']['error'] == 0) {
+            $ledgerbFile = $_FILES['ledgerb'];
+            $ledgerbFileName = $ledgerbFile['name'];
+            $ledgerbFilePath = $ledgerDir . 'LEDGEB' . '_' . $branchid . $timenodash . '.' . pathinfo($ledgerbFileName, PATHINFO_EXTENSION);
+            if (!move_uploaded_file($ledgerbFile['tmp_name'], $ledgerbFilePath)) {
+                echo 'Error uploading ledger file';
+            }
+        }
+
+        $ledgerquery = "INSERT INTO `ledger` (`userId`, `front`, `back`, `date`) VALUES ('$reqID', '$ledgerfFilePath', '$ledgerbFilePath', '$dateresult')";
+        mysqli_query($conn, $ledgerquery);
 
     } else {
         echo "Error: " . $query1 . "<br>" . mysqli_error($conn);
@@ -105,5 +105,3 @@ if (isset($_POST['save'])) {
 }
 
 ?>
-
-

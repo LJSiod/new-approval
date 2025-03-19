@@ -3,9 +3,9 @@
 include('../config/db.php');
 
 
-if(isset($_GET['id'])){
+if (isset($_GET['id'])) {
 	$action = $_GET['action'];
-    $id = $_GET['id'];
+	$id = $_GET['id'];
 	$username = $_GET['username'];
 	$password = $_GET['password'];
 
