@@ -48,8 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt2->execute();
 
         }
-        header("Location: views/dashboard.php");
-        exit();
+        $success = "Welcome! " . htmlspecialchars($user['Name']);
     } elseif (mysqli_num_rows($result) > 1) {
         $error = "Multiple users found, please contact your administrator.";
 
@@ -63,167 +62,225 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NLI|Approval Site</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="assets/image/neocash.ico">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-    <style media="screen">
-        *,
-        *:before,
-        *:after {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-
+    <title>NLI</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="assets/image/NLI.ico" type="image/x-icon">
+    <style>
         body {
-            background-color: #080710;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: "Fira Sans", sans-serif;
+            background-image: url('assets/image/9.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: #0D9849;
         }
 
-        .background {
-            width: 430px;
-            height: 520px;
-            position: absolute;
-            transform: translate(-50%, -50%);
-            left: 50%;
-            top: 50%;
-        }
-
-        .background .shape {
-            height: 200px;
-            width: 200px;
-            position: absolute;
-            border-radius: 50%;
-        }
-
-        .shape:first-child {
-            background: linear-gradient(#FFF500,
-                    #34A18B);
-            left: -80px;
-            top: -80px;
-        }
-
-        .shape:last-child {
-            background: linear-gradient(to right,
-                    #34A18B,
-                    #FFF500);
-            right: -30px;
-            bottom: -80px;
-        }
-
-        form {
-            height: 520px;
-            width: 400px;
-            background-color: rgba(255, 255, 255, 0.13);
-            position: absolute;
-            transform: translate(-50%, -50%);
-            top: 50%;
-            left: 50%;
-            border-radius: 10px;
+        .form {
+            background-color: #fff;
+            display: flex;
+            flex-direction: row;
+            height: auto;
+            max-width: 900px;
+            width: 100%;
+            border-radius: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+            overflow: hidden;
+            opacity: 95%;
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-            padding: 50px 35px;
         }
 
-        form * {
-            font-family: 'Poppins', sans-serif;
-            color: #ffffff;
-            letter-spacing: 0.5px;
-            outline: none;
-            border: none;
+        .form-logo {
+            /* background-color: #f8f9fa; */
+            background-image: url('assets/image/8.png');
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-right: 1px solid #ddd;
         }
 
-        form h3 {
-            font-size: 32px;
-            font-weight: 500;
-            line-height: 42px;
+        .form-logo img {
+            max-width: 100%;
+            height: auto;
+            max-height: 150px;
+        }
+
+        .form-logo h5 {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
             text-align: center;
-            letter-spacing: 2px;
         }
 
-        label {
+        .form-content {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-title {
+            font-family: Raleway, sans-serif;
+            line-height: 1.75rem;
+            letter-spacing: 0.10rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: #0D9849;
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-container label {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 5px;
             display: block;
-            margin-top: 30px;
-            font-size: 16px;
-            font-weight: 500;
         }
 
-        input {
-            display: block;
-            height: 50px;
+        .input-container input {
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.07);
-            border-radius: 3px;
-            padding: 0 10px;
-            margin-top: 8px;
-            font-size: 14px;
-            font-weight: 300;
+            padding: 10px 15px;
+            padding-left: 40px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
         }
 
-        ::placeholder {
-            color: #e5e5e5;
+        .input-container i {
+            position: absolute;
+            left: 10px;
+            top: 65%;
+            transform: translateY(-50%);
+            color: #0D9849;
         }
 
-        button {
-            margin-top: 50px;
+        .submit {
             width: 100%;
-            background-color: #ffffff;
-            color: #080710;
-            padding: 15px 0;
-            font-size: 18px;
-            font-weight: 600;
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #0D9849;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: 0.3s;
+            text-transform: uppercase;
         }
 
-        button:hover {
-            background-color: #FFFFF0;
+        .submit:hover {
+            background-color: #0d8240;
         }
 
-        .error {
-            color: #ff512f;
-            font-size: 14px;
+        .copyright {
             text-align: center;
-            margin-top: 10px;
+            color: #555;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form {
+                flex-direction: column;
+                border-radius: 1rem;
+            }
+
+            .form-logo {
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                padding: 20px;
+            }
+
+            .form-content {
+                padding: 20px;
+            }
+
+            .form-logo img {
+                max-height: 150px;
+            }
+
+            .form-title {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="background">
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-    <form action="index.php" method="post">
-        <h3>Login</h3>
-        <label for="username">Username</label>
-        <input type="text" placeholder="Username" name="username" id="username" required>
-
-        <label for="password">Password</label>
-        <input type="password" placeholder="Password" name="password" id="password" required>
-
-        <button>Log In</button>
-        <div class="d-flex justify-content-between">
-            <span class="small">Version <?php echo $_SESSION['version']; ?></span>
-            <span class="small">&copy; <?php echo date('Y'); ?> NLI|Approval Site</span>
+    <form class="form mx-3" method="POST" action="">
+        <div class="form-logo">
+            <img src="assets/image/Neologo.png" alt="Logo" draggable="false">
+            <h5>NEOCASH LENDING INC.</h5>
+            <h6 style="margin-top: -10px; font-size: 0.8rem;">Approval Site</h6>
+        </div>
+        <div class="form-content">
+            <?php if (isset($error)): ?>
+                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                    <h6 class="font-weight-bold"><i
+                            class="fa fa-exclamation-triangle text-danger mr-2"></i><?php echo $error; ?>!</h6>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <?php endif; ?>
+            <h2 class="form-title">ACCOUNT LOGIN</h2>
+            <div class="input-container">
+                <i class="fa fa-user fa-2x mr-2"></i>
+                <label class="small m-0" for="username">Username</label>
+                <input type="text" placeholder="Enter username" name="username" required style="padding-left: 3rem;">
+            </div>
+            <div class="input-container" style="position: relative;">
+                <i class="fa fa-lock fa-2x mr-2"></i>
+                <label class="small m-0" for="password">Password</label>
+                <input type="password" placeholder="Enter password" name="password" id="password"
+                    style="width: 100%; padding-left: 3rem;" required>
+            </div>
+            <button type="submit" class="submit">Sign in</button>
+            <div class="copyright">
+                NLI|Approval Site. &copy; <?php echo date('Y'); ?>. All rights reserved.
+            </div>
         </div>
     </form>
 
-    <script src="https://unpkg.com/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        <?php if (isset($error)): ?>
+        <?php if (isset($success)): ?>
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: '<?php echo $error; ?>',
-                confirmButtonText: 'OK'
-            });
+                icon: 'success',
+                title: 'Success',
+                text: '<?php echo $success; ?>',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            }).then(function () {
+                window.location.href = "views/dashboard.php";
+            })
         <?php endif; ?>
+
     </script>
 </body>
 

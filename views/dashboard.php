@@ -29,28 +29,26 @@ $currentdate = date('Y-m-d');
         table {
             box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.21);
             background-color: black;
+            word-wrap: break-word;
         }
 
         .br-pagebody {
             margin-top: 10px;
             margin-left: auto;
             margin-right: auto;
-            max-width: 1300px;
+            max-width: 1360px;
         }
 
         .br-section-wrapper {
             border-radius: 3px;
-            background-color: #fff;
             padding: 20px;
+            background-color: #fff;
             height: 87vh;
             margin-left: 0px;
             margin-right: 0px;
             box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.21);
-        }
-
-        .teal {
-            background-color: #1CAF9A;
-            color: white;
+            opacity: 90%;
+            /* backdrop-filter: blur(10px); */
         }
     </style>
 
@@ -61,7 +59,8 @@ $currentdate = date('Y-m-d');
         <div class="br-pagebody">
             <div class="br-section-wrapper mt-3">
                 <div class="d-flex">
-                    <h6 class="text-uppercase font-weight-bold mr-auto">Borrowers Information</h6>
+                    <h6 class="text-uppercase font-weight-bold mr-auto" style="font-family: Raleway, sans-serif">
+                        Borrowers Information</h6>
                     <span class="text-uppercase font-weight-bold small"><?php echo $dateformat; ?></span>
                 </div>
                 <div class="d-flex">
@@ -139,8 +138,7 @@ $currentdate = date('Y-m-d');
                     }
                 },
                 order: false,
-                <?php if ($branchid == 1) { ?>
-                                columns: [
+                <?php if ($branchid == 1) { ?>columns: [
                         { data: 'BranchName' },
                         { data: 'Borrower' },
                         { data: 'PreviousLoanAmount' },
@@ -156,8 +154,7 @@ $currentdate = date('Y-m-d');
                             }
                         }
                     ],
-                <?php } else { ?>
-                                columns: [
+                <?php } else { ?>columns: [
                         { data: 'Borrower' },
                         { data: 'PreviousLoanAmount' },
                         { data: 'ProposedLoanAmount' },
@@ -223,7 +220,8 @@ $currentdate = date('Y-m-d');
                 table.ajax.reload(null, false);
                 console.log('%cTable Updated', 'color:red');
             }, 10000);
-        }); 
+        });
+
     </script>
 </body>
 

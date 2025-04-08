@@ -75,6 +75,7 @@ $row = mysqli_fetch_assoc($result);
     margin-left: 0px;
     margin-right: 0px;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.21);
+    opacity: 90%;
   }
 
   .imagelist {
@@ -100,15 +101,17 @@ $row = mysqli_fetch_assoc($result);
   <div class="br-section-wrapper mt-3">
     <?php if ($branchid == 1) { ?>
       <div class="d-flex justify-content-between">
-        <h6 class="tx-14 mg-b-0 text-uppercase tx-inverse font-weight-bold">Update</h6>
-        <h5 class="tx-black text-uppercase"><?= $row['BranchName'] ?> Branch</h5>
+        <h6 class="text-uppercase font-weight-bold">Update</h6>
+        <h5 class="font-weight-bold text-uppercase" style="font-family: Raleway, sans-serif">
+          <u><?= $row['BranchName'] ?> Branch</u>
+        </h5>
       </div>
       <hr>
     <?php } ?>
     <form method="post" action="../actions/edit.php">
       <input type="hidden" name="rowids" value="<?= $row['ID'] ?>">
 
-      <h6 class="tx-gray-800 mt-1 text-uppercase tx-bold tx-14 mg-b-10">Borrowers Information</h6>
+      <h6 class="mt-1 text-uppercase">Borrowers Information</h6>
       <div class="form-row">
         <div class="form-group col-sm">
           <strong><label class="text-muted">Name of Borrower</label></strong>

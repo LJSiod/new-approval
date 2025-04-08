@@ -49,7 +49,7 @@ $username = $_SESSION['username'];
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-white shadow-sm">
+  <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-white py-0 shadow-sm">
     <a class="navbar-brand d-flex align-items-center" href="dashboard.php">
       <img src="../assets/image/Neologo.png" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
       <strong style="font-family: Century Gothic;">NEOCASH|Approval Site</strong>
