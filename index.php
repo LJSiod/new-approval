@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt2->execute();
 
         }
-        $success = "Welcome! " . htmlspecialchars($user['Name']);
+        $success = "Welcome " . htmlspecialchars($user['Name'] . "!");
     } elseif (mysqli_num_rows($result) > 1) {
         $error = "Multiple users found, please contact your administrator.";
 
@@ -271,8 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php if (isset($success)): ?>
             Swal.fire({
                 icon: 'success',
-                title: 'Success',
-                text: '<?php echo $success; ?>',
+                title: '<?php echo $success; ?>',
                 showConfirmButton: false,
                 timer: 2000,
                 timerProgressBar: true

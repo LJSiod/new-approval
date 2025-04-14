@@ -4,11 +4,11 @@ include('../config/db.php');
 $uploadDir = '../uploads/';
 $ledgerDir = '../ledger/';
 
+//initializing variables
 if (isset($_POST['save'])) {
     $date = new DateTime("now", new DateTimeZone('Asia/Manila'));
     $dateresult = $date->format('Y-m-d');
     $timenodash = $date->format('dhi');
-
     $branchid = $_SESSION['branchid'];
     $status = "PENDING";
 
@@ -37,68 +37,73 @@ if (isset($_POST['save'])) {
         $balance = "0";
     }
 
+    //insert string datas
     $query1 = "INSERT INTO `ApprovalInfo`(
         `Borrower`, `Address`, `FundSource`, `MonthlyIncome`, 
         `LoanPurpose`, `PreviousLoanAmount`, `ProposedLoanAmount`, `ApprovedLoanAmount`, 
-        `RequirementsPassed`, `NameofCI`, `AccountAllocation`, `BranchID`, `Status`, 
+        `RequirementsPassed`, `NameofCI`, `AccountAllocation`, `Remarks`, `BranchID`, `Status`, 
         `AccountStatus`, `Cycle`, `AccountType`, `DateAdded`, `Paid`, `Balance`) 
         VALUES (
         '$name','$address','$fundsource','$monthlyincome','$loanpurpose',
         '$previousloanamount','$proposedloanamount','$approvedloanamount',
-        '$requirmentpassed','$ci','$accountallocation',$branchid,'$status',
+        '$requirmentpassed','$ci','$accountallocation', ' ',$branchid,'$status',
         '$accstat','$cycle','$type','$dateresult','$paid','$balance'
     )";
 
+    //if success, upload files and insert filepath in database
     if (mysqli_query($conn, $query1)) {
-        $reqID = mysqli_insert_id($conn);
+        $rowID = mysqli_insert_id($conn);
 
-        for ($i = 0; $i <= 11; $i++) {
-            $fileKey = 'file' . ($i === 0 ? '' : $i);
-            $filePathVariable = 'file' . ($i === 0 ? '' : $i) . 'Path';
-            $fileNameVariable = 'fileName' . ($i === 0 ? '' : $i);
-            if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] == 0) {
-                $file = $_FILES[$fileKey];
-                $$fileNameVariable = $file['name'];
-                $$filePathVariable = $uploadDir . pathinfo($$fileNameVariable, PATHINFO_FILENAME) . '_' . $branchid . '.' . pathinfo($$fileNameVariable, PATHINFO_EXTENSION);
-                $filename = $$filePathVariable;
-                if (!move_uploaded_file($file['tmp_name'], $$filePathVariable)) {
-                    error_log('Error uploading file: ' . $file['name'] . ' to ' . $$filePathVariable);
-                    echo 'Error uploading file: ' . $file['name'] . ' to ' . $$filePathVariable;
-                } else {
-                    $reqquery = "INSERT INTO requirements (userId, File, DateAdded) VALUES ('$reqID', '$filename', '$dateresult')";
-                    if (!mysqli_query($conn, $reqquery)) {
-                        echo 'Error inserting file record: ' . mysqli_error($conn);
-                    }
+        for ($i = 1; $i <= 12; $i++) {
+            $fileTmp = $_FILES["file$i"]['tmp_name'];
+            $fileName = $_FILES["file$i"]['name'];
+            $filePath = $uploadDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $fileName;
+
+            if (move_uploaded_file($fileTmp, $filePath)) {
+                $reqquery = "INSERT INTO requirements (userId, File, DateAdded) VALUES ('$rowID', '$filePath', '$dateresult')";
+                if (!mysqli_query($conn, $reqquery)) {
+                    echo 'Error inserting file record: ' . mysqli_error($conn);
                 }
-            } else {
-                $$filePathVariable = null;
-                $$fileNameVariable = null;
             }
         }
+        //ledger file upload and db insertion
+        $fronttmp = $_FILES['ledgerf']['tmp_name'];
+        $frontname = $_FILES['ledgerf']['name'];
+        $backtmp = $_FILES['ledgerb']['tmp_name'];
+        $backname = $_FILES['ledgerb']['name'];
+        $front = $ledgerDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $frontname;
+        $back = $ledgerDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $backname;
 
-        if (isset($_FILES['ledgerf']) && $_FILES['ledgerf']['error'] == 0) {
-            $ledgerfFile = $_FILES['ledgerf'];
-            $ledgerfFileName = $ledgerfFile['name'];
-            $ledgerfFilePath = $ledgerDir . 'LEDGEF' . '_' . $branchid . $timenodash . '.' . pathinfo($ledgerfFileName, PATHINFO_EXTENSION);
-            if (!move_uploaded_file($ledgerfFile['tmp_name'], $ledgerfFilePath)) {
-                echo 'Error uploading ledger file';
+        if (!empty($fronttmp) || !empty($backtmp)) {
+            $frontPath = null;
+            $backPath = null;
+
+            if (!empty($fronttmp)) {
+                if (move_uploaded_file($fronttmp, $front)) {
+                    $frontPath = $front;
+                } else {
+                    echo 'Error moving front file.';
+                }
+            }
+
+            if (!empty($backtmp)) {
+                if (move_uploaded_file($backtmp, $back)) {
+                    $backPath = $back;
+                } else {
+                    echo 'Error moving back file.';
+                }
+            }
+
+            if ($frontPath || $backPath) {
+                $reqquery = "INSERT INTO ledger (userId, front, back, date) VALUES ('$rowID', '$frontPath', '$backPath', '$dateresult')";
+                if (!mysqli_query($conn, $reqquery)) {
+                    echo 'Error inserting file records: ' . mysqli_error($conn);
+                }
             }
         }
-
-        if (isset($_FILES['ledgerb']) && $_FILES['ledgerb']['error'] == 0) {
-            $ledgerbFile = $_FILES['ledgerb'];
-            $ledgerbFileName = $ledgerbFile['name'];
-            $ledgerbFilePath = $ledgerDir . 'LEDGEB' . '_' . $branchid . $timenodash . '.' . pathinfo($ledgerbFileName, PATHINFO_EXTENSION);
-            if (!move_uploaded_file($ledgerbFile['tmp_name'], $ledgerbFilePath)) {
-                echo 'Error uploading ledger file';
-            }
-        }
-
-        $ledgerquery = "INSERT INTO `ledger` (`userId`, `front`, `back`, `date`) VALUES ('$reqID', '$ledgerfFilePath', '$ledgerbFilePath', '$dateresult')";
-        mysqli_query($conn, $ledgerquery);
 
     } else {
-        echo "Error: " . $query1 . "<br>" . mysqli_error($conn);
+        echo json_encode(["error" => mysqli_error($conn), "query" => $query1]);
     }
     header("Location: ../views/dashboard.php");
     exit;

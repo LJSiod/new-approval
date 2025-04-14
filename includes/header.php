@@ -5,43 +5,11 @@ $userid = $_SESSION['id'];
 $branchid = $_SESSION['branchid'];
 $username = $_SESSION['username'];
 ?>
-<!DOCTYPE html>
-<html lang="en-us">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/x-icon" href="../assets/image/NLI.ico">
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href="../assets/css/styles.css" rel="stylesheet">
   <title>NLI</title>
   <style>
-    .navbar {
-      background-color: rgb(234, 255, 0);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-brand {
-      color: #fff;
-    }
-
-    .navbar-nav .nav-link {
-      color: #fff;
-    }
-
-    .strong {
-      font-weight: bolder;
-    }
-
-    .white {
-      color: white;
-    }
-
-    .footer {
-      height: 35px;
-    }
-
     .profile {
       width: 200px;
     }
@@ -49,50 +17,52 @@ $username = $_SESSION['username'];
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-white py-0 shadow-sm">
-    <a class="navbar-brand d-flex align-items-center" href="dashboard.php">
-      <img src="../assets/image/Neologo.png" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
+  <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-body-tertiary py-0 shadow-sm me-auto">
+    <a class="navbar-brand d-flex align-items-center ms-1" href="dashboard.php">
+      <img src="../assets/image/Neologo.png" width="30" height="30" class="d-inline-block align-top me-2" alt="">
       <strong style="font-family: Century Gothic;">NEOCASH|Approval Site</strong>
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <!-- <a class="nav-link text-dark" href="#"><i class="fa fa-edit text-success" aria-hidden="true"></i><strong> Submit Borrower </strong></a> -->
+          <!-- <a class="nav-link text-dark" href="#"><i class="fa fa-edit text-success" aria-hidden="true"></i><strong>
+              Submit Borrower </strong></a> -->
         </li>
       </ul>
-      <h6 class="mr-2 small">Current User: <b><?= $name; ?></b></h6>
+
+      <h6 class="mr-2 small text-light">Current User: <b><?= $name; ?></b></h6>
+      <!-- Corrected Dropdown Code -->
       <div class="dropdown">
-        <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="btn btn-tertiary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
           <img src="../assets/image/profile.png" style="width: 30px; height: 30px;" name="profile"
             class="rounded-circle mr-2">
-        </button>
-        <div class="dropdown-menu dropdown-menu-right profile" aria-labelledby="dropdownMenuButton">
+        </a>
+        <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end profile" aria-labelledby="dropdownMenuButton">
           <div style="display: flex; align-items: center; justify-content: center;">
             <img src="../assets/image/Neologo.png" class="rounded-circle mt-3" alt="User Image"
               style="width: 70px; height: 70px;">
           </div>
-          <h6 class="dropdown-item font-weight-bold text-center"><?= $name; ?></h6>
-          <h6 class="dropdown-item font-weight-bold text-center text-muted small" style="margin-top: -15px;">
+          <h6 class="dropdown-item fw-bold text-center"><?= $name; ?></h6>
+          <h6 class="dropdown-item fw-bold text-center text-muted small" style="margin-top: -15px;">
             <u><?= $username; ?></u>
           </h6>
           <span id="totalneo"></span>
           <span id="totalgen"></span>
           <span id="total"></span>
           <div id="totals"></div>
-          <h6 style="font-size: 9px; letter-spacing: 2px"
-            class="text-muted text-uppercase text-center font-weight-bold"><i><u>Based on Current Date</u></i></h6>
+          <h6 style="font-size: 9px; letter-spacing: 2px" class="text-muted text-uppercase text-center fw-bold">
+            <i><u>Based on Current Date</u></i>
+          </h6>
           <div class="dropdown-divider"></div>
           <?php if ($branchid != 1) { ?>
-            <a class="dropdown-item text-dark small" href="submitapproval.php"><i class="text-success fa fa-plus-circle"
+            <a class="dropdown-item small" href="submitapproval.php"><i class="text-success fa fa-plus-circle"
                 aria-hidden="true"></i> <b>Submit Borrower</b></a>
           <?php } ?>
-          <a class="dropdown-item text-dark small" href="#" id="editprofile" data-toggle="modal"
-            data-target="#editprofileModal"><i class="fa fa-edit" aria-hidden="true"></i> <b>Edit Profile</b></a>
           <a class="dropdown-item text-danger small" href="../logout.php" id="logoutButton"><i class="fa fa-sign-out"
               aria-hidden="true"></i> <b>Logout</b></a>
         </div>
@@ -158,7 +128,6 @@ $username = $_SESSION['username'];
   </nav> -->
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script>
 
     function loadtotals() {
