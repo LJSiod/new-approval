@@ -64,16 +64,16 @@ if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         $data[] = array(
             'ID' => $row['ID'],
-            'BranchName' => $row['BranchName'],
-            'PreviousLoanAmount' => number_format($row['PreviousLoanAmount'], 0),
-            'AccountStatus' => $row['AccountStatus'],
-            'AccountAllocation' => $row['AccountAllocation'],
-            'ApprovedLoanAmount' => number_format($row['ApprovedLoanAmount'], 0),
-            'Borrower' => $row['Borrower'],
+            'BranchName' => '<span class="label">Branch: </span>' . $row['BranchName'],
+            'PreviousLoanAmount' => '<span class="label"> Previous: </span>' . number_format($row['PreviousLoanAmount'], 0),
+            'AccountStatus' => '<span class="label">Account: </span>' . $row['AccountStatus'],
+            'AccountAllocation' => '<span class="label">Allocation: </span>' . $row['AccountAllocation'],
+            'ApprovedLoanAmount' => '<span class="label">Approved: </span>' . number_format($row['ApprovedLoanAmount'], 0),
+            'Borrower' => '<span class="label">Name: </span>' . $row['Borrower'],
             'DateAdded' => $row['DateAdded'],
-            'ProposedLoanAmount' => number_format($row['ProposedLoanAmount'], 0),
+            'ProposedLoanAmount' => '<span class="label">Proposed: </span>' . number_format($row['ProposedLoanAmount'], 0),
             'Status' => $row['Status'],
-            'Remarks' => $row['Remarks']
+            'Remarks' => '<span class="label">Remarks: </span>' . $row['Remarks']
         );
     }
     echo json_encode(array('data' => $data));

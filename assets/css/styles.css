@@ -6,11 +6,7 @@ body {
 	font-family: Fira Sans, sans-serif;
 	/* background-color: #e6e6e6; */
 	/* background-image: url("../image/approveloop.png"); */
-	background-image: url("../image/12.png");
-	background-size: cover;
-	background-position: center;
-	background-attachment: fixed;
-	background-repeat: no-repeat;
+	transition: all 0.2s ease-in-out;
 }
 
 .container {
@@ -119,6 +115,10 @@ th {
 	.label {
 		display: inline;
 		font-weight: bolder;
+	}
+
+	#legend {
+		display: none;
 	}
 }
 

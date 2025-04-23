@@ -51,7 +51,7 @@ $row = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -98,7 +98,7 @@ $row = mysqli_fetch_assoc($result);
 </style>
 
 <div class="br-pagebody">
-  <div class="br-section-wrapper bg-dark mt-3">
+  <div class="br-section-wrapper mt-2">
     <?php if ($branchid == 1) { ?>
       <div class="d-flex justify-content-between">
         <h6 class="text-uppercase fw-bold">Update</h6>
@@ -113,18 +113,18 @@ $row = mysqli_fetch_assoc($result);
 
       <h6 class="mt-1 text-uppercase">Borrowers Information</h6>
       <div class="row">
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Name of Borrower</label></strong>
           <input type="text" name="name" id="names" required class="form-control form-control-sm"
             value="<?= $row['Borrower'] ?>">
         </div>
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Borrower's Address</label></strong>
           <input type="text" name="address" id="addresss" required class="form-control form-control-sm"
             value="<?= $row['Address'] ?>">
         </div>
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Source of Fund:</label></strong>
           <select class="form-select form-select-sm" id="asourceoffunds" name="sourceoffund">
             <option>Employed</option>
@@ -132,42 +132,42 @@ $row = mysqli_fetch_assoc($result);
           </select>
         </div>
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Purpose of Loan</label></strong>
           <input type="text" name="purposeofloan" id="purposeofloans" required class="form-control form-control-sm"
             value="<?= $row['LoanPurpose'] ?>">
         </div>
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Requirements Passed</label></strong>
           <input type="text" name="requirement" id="requirements" required class="form-control form-control-sm"
             value="<?= $row['RequirementsPassed'] ?>">
         </div>
       </div>
-      <div class="row">
-        <div class="col">
+      <div class="row mb-3">
+        <div class="col-md">
           <strong><label class="text-muted">Name of Credit Investigator</label></strong>
           <input type="text" name="ci" id="cis" required class="form-control form-control-sm"
             value="<?= $row['NameofCI'] ?>">
         </div>
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Estimated Monthly Income</label></strong>
           <input type="number" name="monthlyincome" id="monthlyincomes" required class="form-control form-control-sm"
             value="<?= $row['MonthlyIncome'] ?>">
         </div>
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Previous Loan Amount</label></strong>
           <input type="number" name="prevs" id="prevs" required class="form-control form-control-sm"
             value="<?= $row['PreviousLoanAmount'] ?>">
         </div>
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Proposed Loan Amount</label></strong>
           <input type="number" name="proposed" id="proposeds" required class="form-control form-control-sm"
             value="<?= $row['ProposedLoanAmount'] ?>">
         </div>
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Approved Loan Amount</label></strong>
           <input type="number" name="approved" id="approveds" required class="form-control form-control-sm"
             value="<?= $row['ApprovedLoanAmount'] ?>">
@@ -175,23 +175,17 @@ $row = mysqli_fetch_assoc($result);
       </div>
 
       <div class="row" style="height: 40vh;">
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted" for="filelist"><?= $count['filecount'] ?> files uploaded</label></strong>
           <ol id="fileList" name="fileList">
             <div class="row">
-              <div class="col">
+              <div class="col-md">
                 <div class="row" id="images">
                   <?php while ($files = mysqli_fetch_assoc($fileresult)):
                     if ($files['File'] == null) {
-                    } else {
-                      if (strpos($files['File'], '.pdf') !== false) { ?>
-                        <div>
-                          <div class="pdf-image" data-src="<?= $files['File'] ?>"></div>
-                        </div>
-                      <?php } else { ?>
-                        <img class="imagelist" src="<?= $files['File'] ?>" alt="<?= $files['File'] ?>">
-                      <?php }
-                    }
+                    } else { ?>
+                      <img class="imagelist" src="<?= $files['File'] ?>" alt="<?= $files['File'] ?>">
+                    <?php }
                   endwhile; ?>
                 </div>
               </div>
@@ -200,48 +194,40 @@ $row = mysqli_fetch_assoc($result);
         </div>
 
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted" for="ledgers">Ledgers</label></strong>
           <div class="row" name="ledgers" id="ledgers">
             <?php if ($row['front'] == null) {
-            } else {
-              if (strpos($row['front'], '.pdf') !== false) { ?>
-                <div class="pdf-image" data-src="<?= $row['front'] ?>"></div>
-              <?php } else { ?>
-                <img class="ledgerprev" src="<?= $row['front'] ?>" alt="<?= $row['front'] ?>">
-              <?php }
-            } ?>
+            } else { ?>
+              <img class="ledgerprev" src="<?= $row['front'] ?>" alt="<?= $row['front'] ?>">
+            <?php } ?>
 
             <?php if ($row['back'] == null) {
-            } else {
-              if (strpos($row['back'], '.pdf') !== false) { ?>
-                <div class="pdf-image" data-src="<?= $row['back'] ?>"></div>
-              <?php } else { ?>
-                <img class="ledgerprev" src="<?= $row['back'] ?>" alt="<?= $row['back'] ?>">
-              <?php }
-            } ?>
+            } else { ?>
+              <img class="ledgerprev" src="<?= $row['back'] ?>" alt="<?= $row['back'] ?>">
+            <?php } ?>
           </div>
         </div>
       </div>
 
       <h6 class="text-uppercase">Account Information</h6>
       <div class="row">
-        <div class="col" id="nocycle">
+        <div class="col-md" id="nocycle">
           <strong><label class="text-muted" for="cycle">No. of Cycle</label></strong>
           <input type="number" name="cycle" id="cycles" required class="form-control form-control-sm"
             value="<?= $row['Cycle']; ?>">
         </div>
-        <div class="col" id="paidss">
+        <div class="col-md" id="paidss">
           <strong><label class="text-muted" for="paid">Remaining Payment Count</label></strong>
           <input type="number" name="paid" id="paids" class="form-control form-control-sm" value="<?= $row['Paid']; ?>">
         </div>
-        <div class="col" id="balancess">
+        <div class="col-md" id="balancess">
           <strong><label class="text-muted" for="balance">Remaining Balance</label></strong>
           <input type="number" name="balance" id="balances" class="form-control form-control-sm"
             value="<?= $row['Balance']; ?>">
         </div>
 
-        <div class="col" id="accountstatuss">
+        <div class="col-md" id="accountstatuss">
           <strong><label class="text-muted" for="accountstatus">Account Status:</label></strong>
           <select class="form-select form-select-sm" id="accstats" name="accountstatus">
             <option value=""></option>
@@ -254,7 +240,7 @@ $row = mysqli_fetch_assoc($result);
       </div>
 
       <div class="row">
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Account Type:</label></strong>
           <select class="form-select form-select-sm" name="type" id="acctype">
             <option>New Account</option>
@@ -262,7 +248,7 @@ $row = mysqli_fetch_assoc($result);
           </select>
         </div>
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Account Allocation:</label></strong>
           <select class="form-select form-select-sm" id="allocations" name="allocation">
             <option>Neo</option>
@@ -271,7 +257,7 @@ $row = mysqli_fetch_assoc($result);
         </div>
 
         <?php if ($branchid == 1) { ?>
-          <div class="col">
+          <div class="col-md">
             <strong><label class="text-muted">Borrower Status</label></strong>
             <select class="form-select form-select-sm" id="statuss" name="status">
               <option>APPROVED</option>
@@ -280,14 +266,14 @@ $row = mysqli_fetch_assoc($result);
             </select>
           </div>
         <?php } else { ?>
-          <div class="col">
+          <div class="col-md">
             <strong><label class="text-muted">Borrower Status</label></strong>
             <input type="text" id="statuss" name="status" class="form-control form-control-sm"
               value="<?= $row['Status']; ?>" readonly>
           </div>
         <?php } ?>
 
-        <div class="col">
+        <div class="col-md">
           <strong><label class="text-muted">Remarks</label></strong>
           <input type="text" id="remarkss" name="remark" class="form-control form-control-sm"
             value="<?= $row['Remarks']; ?>" <?php if ($branchid != 1) {
@@ -295,11 +281,15 @@ $row = mysqli_fetch_assoc($result);
               } ?>>
         </div>
       </div>
-      <div class="d-flex justify-content-end mt-2">
-        <button type="submit" name="save"
-          class="btn btn-sm btn-primary tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium">Save Changes</button>
-        <button type="button" class="btn btn-sm btn-secondary ms-2 tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium"
-          onclick="window.history.back()">Close</button>
+      <hr>
+      <div class="d-flex mt-2 flex-column flex-sm-row" style="font-family: Raleway, sans-serif">
+        <div class="me-auto border p-2 small"><span>Press <kbd>ESC</kbd> to <kbd>Close</kbd></span></div>
+        <div class="d-flex justify-content-center justify-content-sm-end">
+          <button type="submit" name="save" class="btn btn-sm btn-primary text-uppercase me-2 px-4 py-2 fw-bold"
+            style="font-size: 12px;">Save Changes</button>
+          <button type="button" class="btn btn-sm btn-secondary text-uppercase px-4 py-2 fw-bold"
+            onclick="window.history.back()" style="font-size: 12px;">Close</button>
+        </div>
       </div>
     </form>
   </div>
@@ -354,38 +344,6 @@ $row = mysqli_fetch_assoc($result);
       flipVertical: 0,
     },
   });
-
-  const processPDFs = (selector, imageClass) => {
-    const elements = document.querySelectorAll(selector + ' .pdf-image');
-    elements.forEach(element => {
-      const link = element.getAttribute('data-src');
-      const loadingTask = pdfjsLib.getDocument(link);
-      loadingTask.promise.then(pdf => {
-        pdf.getPage(1).then(page => {
-          const viewport = page.getViewport({ scale: 1.0 });
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-
-          page.render({
-            canvasContext: context,
-            viewport: viewport
-          }).promise.then(() => {
-            const img = document.createElement('img');
-            img.src = canvas.toDataURL('image/png');
-            img.className = imageClass;
-            element.parentNode.appendChild(img);
-            requirements.update();
-            ledgers.update();
-          });
-        });
-      });
-    });
-  };
-
-  processPDFs('#images', 'imagelist');
-  processPDFs('#ledgers', 'ledgerprev');
 
   document.addEventListener('keydown', function (event) {
     if (event.keyCode === 27) {

@@ -11,7 +11,7 @@ $currentdate = date('Y-m-d');
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -22,6 +22,7 @@ $currentdate = date('Y-m-d');
         integrity="sha384-4YCf35SCoNErxKb3uZGFlBfNxnFh2r1O1NaAO7wl6CIB2geJDtriZeLwca3usiAR" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="../assets/css/styles.css" rel="stylesheet">
+    <link href="../assets/css/loader.css" rel="stylesheet">
     <title>NLI</title>
     <style>
         table {
@@ -52,6 +53,12 @@ $currentdate = date('Y-m-d');
             border-radius: 50px;
         }
 
+        .smol {
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
         .approved {
             background-color: #86de86 !important;
             color: black !important
@@ -73,19 +80,22 @@ $currentdate = date('Y-m-d');
 <body>
     <div class="container-fluid">
         <div class="br-pagebody">
-            <div class="br-section-wrapper bg-dark mt-3">
+            <div class="br-section-wrapper mt-3" id="wrapper">
                 <div class="d-flex">
                     <h6 class="text-uppercase fw-bold me-auto" style="font-family: Raleway, sans-serif">
                         Borrowers Information</h6>
                     <span class="text-uppercase fw-bold small"><?php echo $dateformat; ?></span>
                 </div>
-                <div class="d-flex">
-                    <p class="me-auto text-muted border p-2">
-                        <i class="fa fa-square" style="color: #86de86"></i><span class="small fw-bold">
+                <div class="d-flex" style="margin-bottom: -15px">
+                    <p class="me-auto text-muted border p-1" id="legend">
+                        <i class="fa fa-square" style="color: #86de86"></i><span class="small fw-bold"
+                            style="font-size: 0.7rem;">
                             :Approved</span>
-                        <i class="fa fa-square ms-3" style="color: #ebbab9"></i><span class="small fw-bold">
+                        <i class="fa fa-square ms-3" style="color: #ebbab9"></i><span class="small fw-bold"
+                            style="font-size: 0.7rem;">
                             :Disapproved</span>
-                        <i class="fa fa-square ms-3" style="color: #efdfae"></i><span class="small fw-bold">
+                        <i class="fa fa-square ms-3" style="color: #efdfae"></i><span class="small fw-bold"
+                            style="font-size: 0.7rem;">
                             :Pending</span>
                     </p>
                     <?php if ($branchid == 1) { ?>
@@ -93,7 +103,7 @@ $currentdate = date('Y-m-d');
                     <?php } ?>
                 </div>
                 <table id="approvaltable" class="table table-hover">
-                    <thead title="Click to Sort">
+                    <thead class="border" title="Click to Sort">
                         <tr>
                             <?php if ($branchid == 1) { ?>
                                 <th>BRANCH</th>
@@ -123,7 +133,6 @@ $currentdate = date('Y-m-d');
         </div>
     </div>
     </div>
-
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/v/dt/dt-2.2.2/sc-2.4.3/datatables.min.js"
@@ -168,7 +177,7 @@ $currentdate = date('Y-m-d');
                         {
                             "data": null,
                             "render": function (data, type, row) {
-                                return "<div class='btn-group btn-group-sm' role='group' aria-label='Basic example'><a href='preview.php?id=" + data.ID + "' type='button' id='edit' class='btn btn-sm teal'>Edit</a><a href='../actions/actions.php?id=" + data.ID + "&action=disapprove' type='button' id='del' class='btn btn-sm btn-danger'>Del</a></div>";
+                                return "<div class='btn-group btn-group-sm' role='group' aria-label='Basic example'><a href='preview.php?id=" + data.ID + "' type='button' id='edit' class='btn btn-sm smol teal'>Edit</a><a href='../actions/actions.php?id=" + data.ID + "&action=disapprove' type='button' id='del' class='btn btn-sm smol btn-danger'>Del</a><button class='btn btn-sm smol btn-success dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false'>Print</button><ul class='dropdown-menu' style='font-size: 0.9rem'><li><button class='dropdown-item' id='details'><i class='fa fa-file-text-o'></i> Ledger and Details</button></li><li><a class='dropdown-item' id='req' href='print.php?id=" + data.ID + "&action=requirements'><i class='fa fa-file-image-o'></i> Requirements</a></li></ul></div>";
                             }
                         }
                     ],
@@ -212,6 +221,42 @@ $currentdate = date('Y-m-d');
                     }
                 })
             }
+
+            $(document).on('click', '#details', function (e) {
+                e.preventDefault();
+                var overlay = $('<div class="overlay text-center d-flex justify-content-center align-items-center" style="position: fixed; width: 100vw; height: 100vh; z-index: 9000; background-color: rgba(0, 0, 0, 0.3); top: 0; left: 0; display: none"><div class="loader JS_on"><span class="binary"></span><span class="binary"></span><span class="getting-there">LOADING PDF...</span></div></div>').appendTo('body');
+                var rowdata = table.row($(this).closest('tr')).data();
+                var id = rowdata.ID;
+                $.ajax({
+                    url: '../load/print.php',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                    },
+                    success: function (result) {
+                        var result = JSON.parse(result);
+                        overlay.remove();
+                        if (result.success == true) {
+                            var url = 'details.php?filename=' + result.filename;
+                            var a = document.createElement("a");
+                            a.target = "_blank";
+                            a.href = url;
+                            a.click();
+                            // location.reload();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: result.status,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function () {
+                                location.reload();
+                            });
+                        }
+                    }
+                });
+            });
 
             $(document).on('click', '#del', function (e) {
                 e.preventDefault();

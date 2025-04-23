@@ -19,8 +19,8 @@ SUM(CAST(b.`ApprovedLoanAmount` AS DECIMAL(18,2))) AS Total FROM ApprovalInfo AS
 }
 ?>
 <h6 class="text-center font-weight-bold small teal">NEO RELEASE</h6>
-<h5 class="text-center"><b>₱<?php echo number_format($row['TotalNeo'], 2); ?></b></h5>
+<h4 class="text-center"><b>₱<?php echo number_format($row['TotalNeo'], 2); ?></b></h4>
 <h6 class="text-center font-weight-bold small teal">GEN RELEASE</h6>
-<h5 class="text-center"><b>₱<?php echo number_format($row['TotalGen'], 2); ?></b></h5>
+<h4 class="text-center"><b>₱<?php echo number_format($row['TotalGen'], 2); ?></b></h4>
 <h6 class="text-center font-weight-bold small teal">TOTAL RELEASE</h6>
-<h5 class="text-center"><b>₱<?php echo number_format($row['Total'], 2); ?></b></h5>
+<h4 class="text-center"><b>₱<?php echo number_format($row['Total'], 2); ?></b></h4>

@@ -4,7 +4,7 @@ include '../config/db.php';
 include '../includes/header.php';
 ?>
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -22,8 +22,8 @@ include '../includes/header.php';
   }
 
   .dragover {
-    border-color: rgb(252, 160, 0);
-    background-color: rgba(0, 252, 4, 0.09);
+    background-color: #1CAF9A;
+    transition: all 0.2s ease-in-out;
   }
 
   .br-pagebody {
@@ -63,7 +63,6 @@ include '../includes/header.php';
     padding: 20px 20px;
     margin-bottom: 0;
     height: 100%;
-    transition: all 0.2s ease-in-out;
   }
 
   .form-layout-2 .form-group-active,
@@ -89,7 +88,6 @@ include '../includes/header.php';
     border: 0;
     padding: 0;
     background-color: transparent;
-    color: #343a40;
     border-radius: 0;
     font-weight: 500;
   }
@@ -116,7 +114,7 @@ include '../includes/header.php';
 <body>
   <div>
     <div class="br-pagebody">
-      <div class="br-section-wrapper bg-dark">
+      <div class="br-section-wrapper">
 
         <h6 class="text-uppercase">Borrower's Information</h6>
 
@@ -233,7 +231,7 @@ include '../includes/header.php';
                 </div>
               </div><!-- col-8 -->
 
-              <div class="col-md-3" id="requirement1">
+              <div class="col-md-3 smooth" id="requirement1">
                 <div class="form-group" id="drop-area1">
                   <label class="small form-control-label" for="file1">Requirements No. 1: </label>
                   <img class="form-control form-control-sm fileThumbnail" id="thumbnail1"
@@ -361,7 +359,7 @@ include '../includes/header.php';
            <div class="form-group" id="drop-area${num}">
              <label class="small form-control-label" for="file${num}">Requirements No. ${num}: </label>
              <img class="form-control form-control-sm fileThumbnail" id="thumbnail${num}"
-               style="border: 1px solid #e5e5e5; border-radius: 5px;" src="../assets/image/drop.jpg"
+               style="border: 1px solid #e5e5e5; border-radius: 5px;" src="../assets/image/14.gif"
                alt="File Thumbnail" ondrop="">
              <input type="file" id="file${num}" name="file${num}" style="display: none;">
              <div class="d-flex">
@@ -705,15 +703,15 @@ include '../includes/header.php';
     });
     $accountType.trigger('change');
 
-    $('#formsubmit').submit(function (event) {
-      event.preventDefault();
+    $('#formsubmit').on('submit', function (e) {
+      e.preventDefault();
       const formData = new FormData(this);
       Swal.fire({
         icon: 'info',
         title: 'Uploading...',
         allowOutsideClick: false,
         showConfirmButton: false,
-        onBeforeOpen: () => {
+        didOpen: () => {
           Swal.showLoading();
         }
       });
@@ -721,28 +719,63 @@ include '../includes/header.php';
         url: '../actions/submit.php',
         type: 'POST',
         data: formData,
-        cache: false,
         contentType: false,
         processData: false,
-        success: function (response) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Upload Success',
-            timer: 1500,
-            showConfirmButton: false
-          }).then(function () {
-            window.location.href = 'dashboard.php';
-          });
-        },
-        error: function (xhr, status, error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: response.error
-          });
+        success: function (data) {
+          const response = JSON.parse(data);
+          if (response.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'Form submitted successfully.',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(function () {
+              window.location.href = 'dashboard.php';
+            });
+          }
         }
       });
+
+      // $('#formsubmit').submit(function (event) {
+      //   event.preventDefault();
+      //   const formData = new FormData(this);
+      //   Swal.fire({
+      //     icon: 'info',
+      //     title: 'Uploading...',
+      //     allowOutsideClick: false,
+      //     showConfirmButton: false,
+      //     onBeforeOpen: () => {
+      //       Swal.showLoading();
+      //     }
+      //   });
+      //   $.ajax({
+      //     url: '../actions/submit.php',
+      //     type: 'POST',
+      //     data: formData,
+      //     cache: false,
+      //     contentType: false,
+      //     processData: false,
+      //     success: function (response) {
+      //       Swal.fire({
+      //         icon: 'success',
+      //         title: 'Success',
+      //         text: 'Upload Success',
+      //         timer: 1500,
+      //         showConfirmButton: false
+      //       }).then(function () {
+      //         window.location.href = 'dashboard.php';
+      //       });
+      //     },
+      //     error: function (xhr, status, error) {
+      //       Swal.fire({
+      //         icon: 'error',
+      //         title: 'Error',
+      //         text: response.error
+      //       });
+      //     }
+      //   });
+      // });
     });
   });
 

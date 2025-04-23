@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "Multiple users found, please contact your administrator.";
 
     } else {
-        $error = "Invalid Credentials.";
+        $error = "Invalid Credentials";
     }
 }
 ?>
@@ -66,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NLI</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="assets/image/NLI.ico" type="image/x-icon">
     <style>
@@ -77,11 +78,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             min-height: 100vh;
             margin: 0;
             font-family: "Fira Sans", sans-serif;
+            color: #0D9849;
+        }
+
+        .light {
             background-image: url('assets/image/9.png');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            color: #0D9849;
+        }
+
+        .dark {
+            background-image: url('assets/image/11.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .form {
@@ -228,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
 </head>
 
-<body>
+<body class="light">
     <form class="form mx-3" method="POST" action="">
         <div class="form-logo">
             <img src="assets/image/Neologo.png" alt="Logo" draggable="false">
@@ -238,11 +249,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="form-content">
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                    <h6 class="font-weight-bold"><i
-                            class="fa fa-exclamation-triangle text-danger mr-2"></i><?php echo $error; ?>!</h6>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h6 class="fw-bold"><i class="fa fa-exclamation-triangle text-danger me-2"></i><?php echo $error; ?>!
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
             <h2 class="form-title">ACCOUNT LOGIN</h2>
@@ -265,9 +274,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $(document).ready(function () {
+            const currentTheme = localStorage.getItem('bsTheme') || 'dark';
+            const body = $('body');
+            if (currentTheme === 'dark') {
+                body.removeClass('light');
+                body.addClass('dark');
+
+            } else {
+                body.removeClass('dark');
+                body.addClass('light');
+            }
+        })
+
         <?php if (isset($success)): ?>
             Swal.fire({
                 icon: 'success',

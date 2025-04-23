@@ -10,14 +10,30 @@ $username = $_SESSION['username'];
   <link rel="icon" type="image/x-icon" href="../assets/image/NLI.ico">
   <title>NLI</title>
   <style>
+    .light {
+      background-image: url("../assets/image/10.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+    .dark {
+      background-image: url("../assets/image/12.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
     .profile {
-      width: 200px;
+      width: 220px;
     }
   </style>
 </head>
 
-<body>
-  <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-body-tertiary py-0 shadow-sm me-auto">
+<body id="body">
+  <nav class="navbar navbar-expand-lg sticky-top bg-body-tertiary py-0 shadow-sm me-auto">
     <a class="navbar-brand d-flex align-items-center ms-1" href="dashboard.php">
       <img src="../assets/image/Neologo.png" width="30" height="30" class="d-inline-block align-top me-2" alt="">
       <strong style="font-family: Century Gothic;">NEOCASH|Approval Site</strong>
@@ -27,25 +43,33 @@ $username = $_SESSION['username'];
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <!-- <a class="nav-link text-dark" href="#"><i class="fa fa-edit text-success" aria-hidden="true"></i><strong>
-              Submit Borrower </strong></a> -->
+          <input class="form-check-input me-1 d-none" type="checkbox" id="darkModeSwitch" checked>
+          <span class="ms-2" style="font-size: 0.7rem;" for="darkModeSwitch">Press
+            <kbd>F2</kbd> to
+            Toggle <u><b>Dark mode</b></u></span>
+          <!-- <div class="form-check form-switch d-flex align-items-center ms-1">
+            <input class="form-check-input me-1" type="checkbox" id="darkModeSwitch" checked>
+            <label class="form-check-label mt-1 me-1" style="font-size: 0.7rem;" for="darkModeSwitch">Press
+              <kbd>F2</kbd> or
+              click <u>button</u> to
+              toggle <u><b>Dark mode</b></u></label>
+          </div> -->
         </li>
       </ul>
 
-      <h6 class="mr-2 small text-light">Current User: <b><?= $name; ?></b></h6>
-      <!-- Corrected Dropdown Code -->
       <div class="dropdown">
-        <a class="btn btn-tertiary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
+        <a class="btn btn-tertiary dropdown-toggle fw-bold" style="font-size: 0.8rem;" href="#" role="button"
+          data-bs-toggle="dropdown" aria-expanded="false">
           <img src="../assets/image/profile.png" style="width: 30px; height: 30px;" name="profile"
             class="rounded-circle mr-2">
+          <?= $name; ?>
         </a>
-        <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end profile" aria-labelledby="dropdownMenuButton">
+        <div class="dropdown-menu dropdown-menu-end profile" aria-labelledby="dropdownMenuButton">
           <div style="display: flex; align-items: center; justify-content: center;">
             <img src="../assets/image/Neologo.png" class="rounded-circle mt-3" alt="User Image"
-              style="width: 70px; height: 70px;">
+              style="width: 90px; height: 90px;">
           </div>
           <h6 class="dropdown-item fw-bold text-center"><?= $name; ?></h6>
           <h6 class="dropdown-item fw-bold text-center text-muted small" style="margin-top: -15px;">
@@ -120,12 +144,12 @@ $username = $_SESSION['username'];
     </div>
   </div>
 
-  <!-- <nav class="navbar fixed-bottom navbar-light bg-light footer">
+  <nav class="navbar fixed-bottom navbar-light py-0 footer" style="z-index: 0;">
     <a class="navbar-brand strong mr-auto" href="#" style="font-size: 0.7rem; font-family: Fahkwang, sans-serif;">&copy;
       NLI, All Rights Reserved <?php echo date('Y'); ?></a>
-    <span class="text-muted" style="font-size: 0.7rem; font-family: Fahkwang, sans-serif;">Dev: LJ Siodora | Version
+    <span class="text-muted" style="font-size: 0.7rem; font-family: Fahkwang, sans-serif;">Dev: LJ | Version
       <?php echo $_SESSION['version']; ?></span>
-  </nav> -->
+  </nav>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
@@ -140,6 +164,54 @@ $username = $_SESSION['username'];
         }
       });
     }
+
+    $(document).ready(function () {
+      const htmlElement = $('html');
+      const switchElement = $('#darkModeSwitch');
+      const wrapper = $('.br-section-wrapper');
+      const body = $('#body');
+
+      const currentTheme = localStorage.getItem('bsTheme') || 'dark';
+      htmlElement.attr('data-bs-theme', currentTheme);
+      switchElement.prop('checked', currentTheme === 'light');
+
+      switchElement.on('change', function () {
+        if ($(this).is(':checked')) {
+          htmlElement.attr('data-bs-theme', 'light');
+          localStorage.setItem('bsTheme', 'light');
+          body.removeClass('dark');
+          body.addClass('light');
+          wrapper.removeClass('bg-dark');
+          wrapper.addClass('bg-light');
+        } else {
+          htmlElement.attr('data-bs-theme', 'dark');
+          localStorage.setItem('bsTheme', 'dark');
+          body.removeClass('light');
+          body.addClass('dark');
+          wrapper.removeClass('bg-light');
+          wrapper.addClass('bg-dark');
+        }
+      });
+
+      if (currentTheme === 'dark') {
+        body.removeClass('light');
+        body.addClass('dark');
+        wrapper.removeClass('bg-light');
+        wrapper.addClass('bg-dark');
+
+      } else {
+        body.removeClass('dark');
+        body.addClass('light');
+        wrapper.removeClass('bg-dark');
+        wrapper.addClass('bg-light');
+      }
+
+      $(document).keydown(function (e) {
+        if (e.keyCode == 113) {
+          switchElement.click();
+        }
+      });
+    });
 
     $('#editprofileform').submit(function (event) {
       event.preventDefault();

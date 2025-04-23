@@ -3,6 +3,7 @@ session_start();
 include('../config/db.php');
 $uploadDir = '../uploads/';
 $ledgerDir = '../ledger/';
+$filecount = count($_FILES);
 
 //initializing variables
 if (isset($_POST['save'])) {
@@ -54,41 +55,99 @@ if (isset($_POST['save'])) {
     if (mysqli_query($conn, $query1)) {
         $rowID = mysqli_insert_id($conn);
 
-        for ($i = 1; $i <= 12; $i++) {
+        for ($i = 1; $i <= $filecount; $i++) {
             $fileTmp = $_FILES["file$i"]['tmp_name'];
             $fileName = $_FILES["file$i"]['name'];
-            $filePath = $uploadDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $fileName;
+            $filePath = $uploadDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $fileName; //unique filename to avoid conflict
 
             if (move_uploaded_file($fileTmp, $filePath)) {
-                $reqquery = "INSERT INTO requirements (userId, File, DateAdded) VALUES ('$rowID', '$filePath', '$dateresult')";
-                if (!mysqli_query($conn, $reqquery)) {
-                    echo 'Error inserting file record: ' . mysqli_error($conn);
+                $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+
+                //convert pdf to png for easier manipulation and system efficiency
+                if ($fileExtension === 'pdf') {
+                    $outputFile = substr($filePath, 0, strrpos($filePath, '.')) . '.png';
+                    $command = "gswin64c -dNOPAUSE -dBATCH -sDEVICE=png16m -r100 -sOutputFile=" . escapeshellarg($outputFile) . " " . escapeshellarg($filePath);
+                    exec($command, $output, $returnCode);
+
+                    //insert to approvaldb when conversion is successful
+                    if ($returnCode === 0) {
+                        $reqquery = "INSERT INTO requirements (userId, File, DateAdded) VALUES ('$rowID', '$outputFile', '$dateresult')";
+                        unlink($filePath);
+                        if (!mysqli_query($conn, $reqquery)) {
+                            echo 'Error inserting file record: ' . mysqli_error($conn);
+                        }
+                    } else {
+                        echo "Error converting PDF to PNG.";
+                    }
+                    //direct insert to db when file type is an image
+                } elseif (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                    $reqquery = "INSERT INTO requirements (userId, File, DateAdded) VALUES ('$rowID', '$filePath', '$dateresult')";
+                    if (!mysqli_query($conn, $reqquery)) {
+                        echo 'Error inserting file record: ' . mysqli_error($conn);
+                    }
+                } else {
+                    echo "Unsupported file type.";
                 }
             }
         }
-        //ledger file upload and db insertion
+        //initializing variables for ledger file upload and db insertion
         $fronttmp = $_FILES['ledgerf']['tmp_name'];
         $frontname = $_FILES['ledgerf']['name'];
         $backtmp = $_FILES['ledgerb']['tmp_name'];
         $backname = $_FILES['ledgerb']['name'];
-        $front = $ledgerDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $frontname;
-        $back = $ledgerDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $backname;
+        $front = $ledgerDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $frontname; //unique filename to avoid conflict
+        $back = $ledgerDir . substr(str_shuffle(MD5(microtime())), 0, 4) . '_' . $backname; //unique filename to avoid conflict
 
+        //check if front or back file is uploaded
         if (!empty($fronttmp) || !empty($backtmp)) {
             $frontPath = null;
             $backPath = null;
 
+            //convert pdf to png for easier manipulation and system efficiency
             if (!empty($fronttmp)) {
                 if (move_uploaded_file($fronttmp, $front)) {
-                    $frontPath = $front;
+                    $fileExtension = strtolower(pathinfo($front, PATHINFO_EXTENSION));
+
+                    if ($fileExtension === 'pdf') {
+                        $outputFile = substr($front, 0, strrpos($front, '.')) . '.png';
+                        $command = "gswin64c -dNOPAUSE -dBATCH -sDEVICE=png16m -r100 -sOutputFile=" . escapeshellarg($outputFile) . " " . escapeshellarg($front);
+                        exec($command, $output, $returnCode);
+
+                        if ($returnCode === 0) {
+                            $frontPath = $outputFile;
+                            unlink($front);
+                        } else {
+                            echo "Error converting PDF to PNG.";
+                        }
+                        //direct insert to db when file type is an image
+                    } elseif (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                        $frontPath = $front;
+                    }
                 } else {
                     echo 'Error moving front file.';
                 }
-            }
 
+            }
+            //convert pdf to png for easier manipulation and system efficiency
             if (!empty($backtmp)) {
                 if (move_uploaded_file($backtmp, $back)) {
-                    $backPath = $back;
+                    $fileExtension = strtolower(pathinfo($back, PATHINFO_EXTENSION));
+
+                    if ($fileExtension === 'pdf') {
+                        $outputFile = substr($back, 0, strrpos($back, '.')) . '.png';
+                        $command = "gswin64c -dNOPAUSE -dBATCH -sDEVICE=png16m -r100 -sOutputFile=" . escapeshellarg($outputFile) . " " . escapeshellarg($back);
+                        exec($command, $output, $returnCode);
+
+                        if ($returnCode === 0) {
+                            $backPath = $outputFile;
+                            unlink($back);
+                        } else {
+                            echo "Error converting PDF to PNG.";
+                        }
+                        //direct insert to db when file type is an image
+                    } elseif (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                        $backPath = $back;
+                    }
                 } else {
                     echo 'Error moving back file.';
                 }
@@ -102,11 +161,13 @@ if (isset($_POST['save'])) {
             }
         }
 
+        // Return success JSON response to be processed on client side
+        echo json_encode(["success" => true, "message" => "Files uploaded and processed successfully."]);
+        exit;
+
     } else {
         echo json_encode(["error" => mysqli_error($conn), "query" => $query1]);
     }
-    header("Location: ../views/dashboard.php");
-    exit;
 }
 
 ?>
